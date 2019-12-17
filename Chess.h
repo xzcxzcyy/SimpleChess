@@ -7,12 +7,13 @@
 
 #include <vector>
 #include <array>
+#include <iostream>
 
 using std::vector;
 using std::array;
+using std::ostream;
 
 class Table;
-class Cord;
 typedef Table *Edge;
 typedef array<array<int, 3>, 3> Map;
 
@@ -30,17 +31,26 @@ private:
     };
     Map map{};
     vector<Edge> edges;
-    bool myTurn;
+    bool computerTurn;
     Status status;
+
+    bool haveFailed();
+    bool haveEnded();
 public:
     explicit Table(const Map &mmap, bool myTurn);
+
     void addEdge(Edge mPointer);
     void setStatus(Status mStatus);
     int operator()(int i, int j);
     const vector<Edge> &getEdges();
-    bool isMyTurn();
+    bool isComputerTurn();
     Status getStatus();
+
     void create(int cntOn);
+    void evaluate();
+    void evaluateWisePlayer();
+    friend ostream &operator<<(ostream &out, const Table &x);
+    static void execute(Table *current);
 };
 
 

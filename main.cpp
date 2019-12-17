@@ -13,7 +13,10 @@ int main()
             map[i][j] = empty;
         }
     }
-    Table table(map, true);
+    map[1][1] = computer;
+    Table table(map, false);
     table.create(0);
+    table.evaluateWisePlayer();
+    Table::execute(&table);
     return 0;
 }
