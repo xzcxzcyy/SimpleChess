@@ -12,36 +12,6 @@ Table::Table(const Map &mmap, bool myTurn)
     status = unknown;
 }
 
-void Table::addEdge(Edge mPointer)
-{
-    edges.push_back(mPointer);
-}
-
-void Table::setStatus(Table::Status mStatus)
-{
-    this->status = mStatus;
-}
-
-int Table::operator()(int i, int j)
-{
-    return map[i][j];
-}
-
-const vector<Edge> &Table::getEdges()
-{
-    return edges;
-}
-
-bool Table::isComputerTurn()
-{
-    return computerTurn;
-}
-
-Table::Status Table::getStatus()
-{
-    return status;
-}
-
 void Table::create(int cntOn)
 {
     if (cntOn == 9)
@@ -136,81 +106,6 @@ bool Table::haveFailed()
     }
 
     return false;
-}
-
-void Table::evaluate()
-{
-    if (edges.empty())
-    {
-        return;
-    }
-    for (const auto &e:edges)
-    {
-        e->evaluate();
-    }
-    if (computerTurn)
-    {
-        for (const auto &e:edges)
-        {
-            if (e->status == fail)
-            {
-                status = success;
-                return;
-            }
-        }
-
-        bool flag = true;
-        for (const auto &e:edges)
-        {
-            if (e->status != success)
-            {
-                flag = false;
-                break;
-            }
-        }
-        if (flag)
-        {
-            status = fail;
-            return;
-        }
-
-        status = unknown;
-        return;
-    }
-    else
-    {
-        bool flag = true;
-        for (const auto &e:edges)
-        {
-            if (e->status != success)
-            {
-                flag = false;
-                break;
-            }
-        }
-        if (flag)
-        {
-            status = fail;
-            return;
-        }
-
-        flag = true;
-        for (const auto &e:edges)
-        {
-            if (e->status != fail)
-            {
-                flag = false;
-                break;
-            }
-        }
-        if (flag)
-        {
-            status = success;
-            return;
-        }
-        status = unknown;
-        return;
-    }
 }
 
 ostream &operator<<(ostream &out, const Table &x)

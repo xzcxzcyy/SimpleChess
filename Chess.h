@@ -36,18 +36,10 @@ private:
 
     bool haveFailed();
     bool haveEnded();
+
 public:
     explicit Table(const Map &mmap, bool myTurn);
-
-    void addEdge(Edge mPointer);
-    void setStatus(Status mStatus);
-    int operator()(int i, int j);
-    const vector<Edge> &getEdges();
-    bool isComputerTurn();
-    Status getStatus();
-
     void create(int cntOn);
-    void evaluate();
     void evaluateWisePlayer();
     friend ostream &operator<<(ostream &out, const Table &x);
     static void execute(Table *current);
