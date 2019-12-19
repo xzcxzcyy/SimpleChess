@@ -65,3 +65,4 @@ dkms.conf
 .idea/
 cmake-build-debug/
 .vscode/
+*.xlsx

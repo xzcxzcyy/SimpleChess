@@ -2,6 +2,7 @@
 // Created by Banson on 2019/12/13.
 //
 
+#include <conio.h>
 #include "Chess.h"
 
 Table::Table(const Map &mmap, bool myTurn)
@@ -52,7 +53,7 @@ void Table::create(int cntOn)
 
 bool Table::haveFailed()
 {
-    mapState cstd; // current standard
+    MapState cstd; // current standard
     if (computerTurn)
     {
         cstd = player;
@@ -108,13 +109,14 @@ bool Table::haveFailed()
     return false;
 }
 
-ostream &operator<<(ostream &out, const Table &x)
+ostream &operator<<(ostream &out, const ExtendedMap &x)
 {
-    for (const auto &a:x.map)
+    system("cls");
+    for (const auto &i:x)
     {
-        for (auto i:a)
+        for (auto j:i)
         {
-            out << i << " ";
+            print(out, j);
         }
         out << std::endl;
     }
@@ -126,11 +128,13 @@ void Table::execute(Table *current)
     using std::cout;
     using std::cin;
 
-    while (!current->haveEnded()) //TODO: Rewrite the condition
+    int boxedX = 0, boxedY = 0;
+    while (!current->haveEnded())
     {
-        cout << *current;
+        cout << generateEMap(current->map, boxedX, boxedY);
         if (current->computerTurn)
         {
+            system("pause");
             if (current->status == success)
             {
                 for (const auto &e:current->edges)
@@ -157,11 +161,52 @@ void Table::execute(Table *current)
         else
         {
             int x, y;
-            do
+            int ch;
+            while ((ch = getch()) != 13)
             {
-                cin >> x >> y;
-            } while (x < 0 || x > 2 || y < 0 || y > 2);
+                switch (ch)
+                {
+                    case 224:
+                        continue;
 
+                    case 72: // up arrow
+                        if (boxedX > 0)
+                        {
+                            --boxedX;
+                            cout << generateEMap(current->map, boxedX, boxedY);
+                        }
+                        break;
+
+                    case 80: // down arrow
+                        if (boxedX < 2)
+                        {
+                            ++boxedX;
+                            cout << generateEMap(current->map, boxedX, boxedY);
+                        }
+                        break;
+
+                    case 75: // left arrow
+                        if (boxedY > 0)
+                        {
+                            --boxedY;
+                            cout << generateEMap(current->map, boxedX, boxedY);
+                        }
+                        break;
+
+                    case 77: // right arrow
+                        if (boxedY < 2)
+                        {
+                            ++boxedY;
+                            cout << generateEMap(current->map, boxedX, boxedY);
+                        }
+                        break;
+
+                    default:
+                        continue;
+                }
+            }
+            x = boxedX;
+            y = boxedY;
             Map temp = current->map;
             temp[x][y] = player;
             for (const auto &e:current->edges)
@@ -175,8 +220,10 @@ void Table::execute(Table *current)
         }
     }
 
+    cout << generateEMap(current->map, boxedX, boxedY) << std::endl;
     cout << "ENDING TABLE" << std::endl;
-    cout << *current;
+    system("pause");
+    cout << generateEMap(current->map, boxedX, boxedY);
 
 }
 
@@ -236,4 +283,87 @@ bool Table::haveEnded()
         }
     }
     return true;
+}
+
+bool setColor(WORD forceGroundColor, WORD backGroundColor)
+{
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (handle == nullptr)
+    {
+        return false;
+    }
+    BOOL ret = SetConsoleTextAttribute(handle, forceGroundColor | backGroundColor);
+    return (ret == TRUE);
+}
+
+void print(ostream &out, MapState i)
+{
+    switch (i)
+    {
+        case empty:
+            setColor(FOREGROUND_GREEN, 7 << 4);
+            out << " ";
+            break;
+
+        case computer:
+            setColor(FOREGROUND_GREEN, BACKGROUND_RED);
+            out << " ";
+            break;
+
+        case player:
+            setColor(10, 10 << 4);
+            out << " ";
+            break;
+
+        case boxed:
+            setColor(FOREGROUND_GREEN, BACKGROUND_INTENSITY);
+            out << " ";
+            break;
+
+        default:
+            out << "ERROR: Map code is illegal!" << std::endl;
+    }
+    setColor(10, 0 << 4);
+}
+
+ExtendedMap generateEMap(const Map &map, int x, int y)
+{
+    ExtendedMap emap;
+    for (int i = 0; i < 13; ++i)
+    {
+        for (int j = 0; j < 26; ++j)
+        {
+            emap[i][j] = empty;
+        }
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            for (int k = 4 * i + 1; k <= 4 * i + 3; ++k)
+            {
+                for (int l = 8 * j + 2; l <= 8 * j + 7; ++l)
+                {
+                    emap[k][l] = map[i][j];
+                }
+            }
+        }
+    }
+
+    if (x >= 0 && x <= 2 && y >= 0 && y <= 2)
+    {
+        int k = 4 * x;
+        int l = 8 * y;
+        for (int m = l; m <= l + 9; ++m)
+        {
+            emap[k][m] = boxed;
+            emap[k + 4][m] = boxed;
+        }
+        for (int m = k + 1; m <= k + 3; ++m)
+        {
+            emap[m][l] = emap[m][l + 1] = emap[m][l + 8] = emap[m][l + 9] = boxed;
+        }
+    }
+    return emap;
 }

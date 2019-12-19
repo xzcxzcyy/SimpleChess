@@ -8,19 +8,23 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include <windows.h>
+#include <cstdlib>
 
 using std::vector;
 using std::array;
 using std::ostream;
 
+
+enum MapState
+{
+    empty, computer, player, boxed
+};
+
 class Table;
 typedef Table *Edge;
-typedef array<array<int, 3>, 3> Map;
-
-enum mapState
-{
-    empty, computer, player
-};
+typedef array<array<MapState, 3>, 3> Map;
+typedef array<array<MapState, 26>, 13> ExtendedMap;
 
 class Table
 {
@@ -41,9 +45,13 @@ public:
     explicit Table(const Map &mmap, bool myTurn);
     void create(int cntOn);
     void evaluateWisePlayer();
-    friend ostream &operator<<(ostream &out, const Table &x);
+
     static void execute(Table *current);
 };
 
+ostream &operator<<(ostream &out, const ExtendedMap &x);
+bool setColor(WORD forceGroundColor, WORD backGroundColor);
+void print(ostream &out, MapState i);
+ExtendedMap generateEMap(const Map &map, int x, int y);
 
 #endif //CHESS_H
