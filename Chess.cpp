@@ -2,7 +2,6 @@
 // Created by Banson on 2019/12/13.
 //
 
-#include <conio.h>
 #include "Chess.h"
 
 Table::Table(const Map &mmap, bool myTurn)
@@ -134,7 +133,7 @@ void Table::execute(Table *current)
         cout << generateEMap(current->map, boxedX, boxedY);
         if (current->computerTurn)
         {
-            system("pause");
+            Sleep(300);
             if (current->status == success)
             {
                 for (const auto &e:current->edges)
@@ -366,4 +365,22 @@ ExtendedMap generateEMap(const Map &map, int x, int y)
         }
     }
     return emap;
+}
+
+
+void Table::welcome(Table &table)
+{
+    using std::cout;
+    using std::endl;
+
+    system("cls");
+    cout << "This is a simple # chess" << endl << endl
+         << "You will use GREEN, while the computer will use RED" << endl << endl
+         << "Press up/down/left/right arrow keys to select; Press Enter to confirm." << endl << endl
+         << "Enjoy yourself! /cy" << endl << endl;
+    setColor(10, 0 << 4);
+    system("pause");
+    cout << generateEMap(table.map, 0, 0) << endl;
+    table.map[1][1] = computer;
+    Sleep(300);
 }

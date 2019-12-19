@@ -1,5 +1,3 @@
-#include <iostream>
-#include <windows.h>
 #include "Chess.h"
 
 using namespace std;
@@ -14,8 +12,8 @@ int main()
             map[i][j] = empty;
         }
     }
-    map[1][1] = computer;
     Table table(map, false);
+    Table::welcome(table);
     table.create(0);
     table.evaluateWisePlayer();
     Table::execute(&table);

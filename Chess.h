@@ -10,6 +10,7 @@
 #include <iostream>
 #include <windows.h>
 #include <cstdlib>
+#include <conio.h>
 
 using std::vector;
 using std::array;
@@ -47,6 +48,8 @@ public:
     void evaluateWisePlayer();
 
     static void execute(Table *current);
+    static void welcome(Table &table);
+
 };
 
 ostream &operator<<(ostream &out, const ExtendedMap &x);
