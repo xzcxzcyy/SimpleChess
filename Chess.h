@@ -44,6 +44,7 @@ private:
 
 public:
     explicit Table(const Map &mmap, bool myTurn);
+    ~Table();
     void create(int cntOn);
     void evaluateWisePlayer();
 

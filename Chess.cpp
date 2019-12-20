@@ -384,3 +384,11 @@ void Table::welcome(Table &table)
     table.map[1][1] = computer;
     Sleep(300);
 }
+
+Table::~Table()
+{
+    for (auto x:edges)
+    {
+        delete x;
+    }
+}
